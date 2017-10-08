@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    tools:context="com.mfekim.testapinytimes.NYTArticleListActivity">
+
+    <!-- Main -->
+    <RelativeLayout
+        android:id="@+id/nyt_item_list_article_default_main"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true">
+
+        <!-- Image -->
+        <ImageView
+            android:id="@+id/nyt_item_list_article_default_image"
+            android:layout_width="75dp"
+            android:layout_height="match_parent"
+            android:background="@android:color/darker_gray"
+            android:scaleType="centerCrop"/>
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/nyt_item_list_article_default_title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@+id/nyt_item_list_article_default_image"
+            android:layout_toRightOf="@+id/nyt_item_list_article_default_image"
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:padding="10dp"
+            android:textColor="@android:color/black"
+            android:textStyle="bold"
+            tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore "/>
+
+    </RelativeLayout>
+
+    <!-- Divider -->
+    <View
+        android:id="@+id/nyt_item_list_article_default_divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/nyt_activity_vertical_margin"
+        android:layout_below="@id/nyt_item_list_article_default_main"
+        android:background="?android:colorBackground"/>
+
+</RelativeLayout>

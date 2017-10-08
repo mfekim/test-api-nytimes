@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,8 @@ import com.mfekim.testapinytimes.api.NYTClientAPI;
 import com.mfekim.testapinytimes.base.NYTBaseFragment;
 import com.mfekim.testapinytimes.model.NYTArticle;
 import com.mfekim.testapinytimes.model.NYTArticleSearchResult;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,13 +40,29 @@ public class NYTArticleListFragment extends NYTBaseFragment {
     private View mTvNoDataMsg;
 
     /** Adapter. */
-    private RecyclerView.Adapter<NYTArticleListAdapter.ViewHolder> mAdapter;
+    private RecyclerView.Adapter<NYTArticleListAdapter.NYTViewHolder> mAdapter;
 
-    /** Items. */
+    /** Layout Manager. */
+    private RecyclerView.LayoutManager mLayoutManager;
+
+    /** Articles. */
     private List<NYTArticle> mArticles = new ArrayList<>();
 
     /** Page. */
     private int mCurrentPage = 0;
+
+    /** Flags. */
+    private boolean mIsFetching;
+    private boolean mFetchNextPage;
+
+    /**
+     * How many entries earlier to start loading more
+     * Example:
+     * <t/>Total item count: 20
+     * <t/>{@link #mVisibleThreshold}: 7
+     * <t/>We will load more item when the item 13 will be visible.
+     */
+    private int mVisibleThreshold = 4;
 
     /**
      * @return A new instance of {@link NYTArticleListFragment}.
@@ -65,107 +84,208 @@ public class NYTArticleListFragment extends NYTBaseFragment {
 
         // Loader
         mVLoader = view.findViewById(R.id.nyt_fragment_list_article_loader);
-        mVLoader.setVisibility(View.VISIBLE);
 
         // No data msg
         mTvNoDataMsg = view.findViewById(R.id.nyt_fragment_list_article_no_data_msg);
 
         // Recycler view
         mRvList = view.findViewById(R.id.nyt_fragment_list_article_recycler_view);
-        mRvList.setLayoutManager(new LinearLayoutManager(getContext()));
+        mLayoutManager = new LinearLayoutManager(getContext());
+        mRvList.setLayoutManager(mLayoutManager);
+        mRvList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
 
-        fetchArticles();
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (mLayoutManager instanceof LinearLayoutManager) {
+                    int visibleItemCount = mLayoutManager.getChildCount();
+                    int totalItemCount = mLayoutManager.getItemCount();
+                    int firstVisibleItemPosition = ((LinearLayoutManager) mLayoutManager)
+                            .findFirstVisibleItemPosition();
+
+                    if (!mIsFetching && mFetchNextPage && visibleItemCount != 0 &&
+                            (totalItemCount - visibleItemCount) <=
+                                    (firstVisibleItemPosition + mVisibleThreshold)) {
+                        fetchMore();
+                    }
+                }
+            }
+        });
+
+        fetch(0);
     }
 
     /**
      * Fetches articles.
+     *
+     * @param page Page index.
      */
-    private void fetchArticles() {
-        onFetchStarting();
-        NYTClientAPI.getInstance().fetchArticles(getContext(), REQUEST_TAG,
+    private void fetch(final int page) {
+        onFetchStarting(page);
+        NYTClientAPI.getInstance().fetchArticles(getContext(), page,
                 new Response.Listener<NYTArticleSearchResult>() {
                     @Override
                     public void onResponse(NYTArticleSearchResult result) {
-                        List<NYTArticle> articles = result.getArticles();
-                        if (articles != null && !articles.isEmpty()) {
-                            mArticles.addAll(articles);
-                            if (mCurrentPage == 0) {
-                                mAdapter = new NYTArticleListAdapter();
-                                mRvList.setAdapter(mAdapter);
-                            } else {
-                                mAdapter.notifyDataSetChanged();
-                            }
-                            onFetchSucceeded();
-                        } else {
-                            onFetchFailed();
-                        }
+                        onFetchSucceeded(page, result.getArticles());
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // TODO
+                        onFetchError(page);
                     }
-                });
+                }, REQUEST_TAG);
     }
 
     /**
      * Called when fetching articles is starting.
+     *
+     * @param page Page index.
      */
-    private void onFetchStarting() {
+    private void onFetchStarting(int page) {
+        Log.d(TAG, "Fetch articles page " + page + " is starting");
+
+        mIsFetching = true;
         mVLoader.setVisibility(mArticles != null && !mArticles.isEmpty() ?
                 View.INVISIBLE : View.VISIBLE);
+        mTvNoDataMsg.setVisibility(View.INVISIBLE);
     }
 
     /**
      * Called when fetching articles succeeded.
+     *
+     * @param page Page index.
      */
-    private void onFetchSucceeded() {
-        onFetchFinished();
+    private void onFetchSucceeded(int page, List<NYTArticle> articles) {
+        Log.d(TAG, "Fetch articles page " + page + " SUCCESS");
+
+        mCurrentPage = page;
+
+        if (mCurrentPage == 0) {
+            mArticles.addAll(articles);
+            mAdapter = new NYTArticleListAdapter();
+            mRvList.setAdapter(mAdapter);
+        } else {
+            // Remove load more item
+            mArticles.remove(mArticles.size() - 1);
+            mAdapter.notifyItemRemoved(mArticles.size());
+
+            // Add new articles
+            int oldArticlesSize = mArticles.size();
+            mArticles.addAll(articles);
+            mAdapter.notifyItemRangeInserted(oldArticlesSize, articles.size());
+        }
+
+        mFetchNextPage = !articles.isEmpty();
+
+        onFetchFinished(page);
     }
 
     /**
      * Called when fetching articles failed.
+     *
+     * @param page Page index.
      */
-    private void onFetchFailed() {
-        onFetchFinished();
+    private void onFetchError(int page) {
+        Log.d(TAG, "Fetch articles page " + page + " ERROR");
+
+        onFetchFinished(page);
     }
 
     /**
      * Called when fetching articles finished.
+     *
+     * @param page Page index.
      */
-    private void onFetchFinished() {
+    private void onFetchFinished(int page) {
         mVLoader.setVisibility(View.INVISIBLE);
         mTvNoDataMsg.setVisibility(mArticles != null && !mArticles.isEmpty() ?
                 View.INVISIBLE : View.VISIBLE);
+        mIsFetching = false;
+    }
+
+    /**
+     * Fetches more articles.
+     */
+    private void fetchMore() {
+        // Add load more item
+        mArticles.add(null);
+        mAdapter.notifyItemInserted(mArticles.size() - 1);
+
+        fetch(mCurrentPage + 1);
     }
 
     /**
      * Manages article list.
      */
     /*package*/ class NYTArticleListAdapter extends
-            RecyclerView.Adapter<NYTArticleListAdapter.ViewHolder> {
+            RecyclerView.Adapter<NYTArticleListAdapter.NYTViewHolder> {
+        /** Types. */
+        private static final int VIEW_TYPE_ITEM_DEFAULT = 0;
+        private static final int VIEW_TYPE_ITEM_LOAD_MORE = 1;
+
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(getActivity())
-                                          .inflate(R.layout.nyt_item_list_article, null);
-            return new ViewHolder(itemView);
+        public NYTViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            if (viewType == VIEW_TYPE_ITEM_LOAD_MORE) {
+                return new NYTViewHolderLoadMore(LayoutInflater
+                        .from(getActivity())
+                        .inflate(R.layout.nyt_item_list_article_load_more, null));
+            } else {
+                return new NYTViewHolderDefault(LayoutInflater
+                        .from(getActivity())
+                        .inflate(R.layout.nyt_item_list_article_default, null));
+            }
         }
 
         @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
-            NYTArticle article = mArticles.get(position);
+        public int getItemViewType(int position) {
+            return mArticles.get(position) != null ?
+                    VIEW_TYPE_ITEM_DEFAULT : VIEW_TYPE_ITEM_LOAD_MORE;
+        }
 
-            // Image TODO
+        @Override
+        public void onBindViewHolder(NYTViewHolder holder, int position) {
+            int itemViewType = getItemViewType(position);
 
-            // Title
-            String title = article.optMainHeadline(null);
-            holder.tvTitle.setText(title);
-            holder.tvTitle.setVisibility(TextUtils.isEmpty(title) ? View.GONE : View.VISIBLE);
+            if (itemViewType == VIEW_TYPE_ITEM_DEFAULT) {
+                NYTViewHolderDefault viewHolderDefault = (NYTViewHolderDefault) holder;
+                NYTArticle article = mArticles.get(position);
 
-            // Divider
-            holder.vDivider.setVisibility(position == getItemCount() - 1 ?
-                    View.GONE : View.VISIBLE);
+                // Image
+                String thumbnailUrl = article.getThumbnailUrl();
+                if (!TextUtils.isEmpty(thumbnailUrl)) {
+                    Picasso.with(getContext())
+                           .load(NYTClientAPI.getInstance().buildImageUrl(thumbnailUrl))
+                           .into(viewHolderDefault.imgImage, new Callback() {
+                               @Override
+                               public void onSuccess() {
+                                   Log.d(TAG, "Image loading SUCCESS");
+                               }
+
+                               @Override
+                               public void onError() {
+                                   Log.e(TAG, "Image loading ERROR");
+                               }
+                           });
+                    viewHolderDefault.imgImage.setVisibility(View.VISIBLE);
+                } else {
+                    viewHolderDefault.imgImage.setVisibility(View.GONE);
+                }
+
+                // Title
+                String title = article.optMainHeadline(null);
+                viewHolderDefault.tvTitle.setText(title);
+                viewHolderDefault.tvTitle.setVisibility(TextUtils.isEmpty(title) ?
+                        View.GONE : View.VISIBLE);
+
+                // Divider
+                viewHolderDefault.vDivider.setVisibility(position == getItemCount() - 1 ?
+                        View.GONE : View.VISIBLE);
+            }
         }
 
         @Override
@@ -176,24 +296,44 @@ public class NYTArticleListFragment extends NYTBaseFragment {
         /**
          * View holder.
          */
-        /*package*/ class ViewHolder extends RecyclerView.ViewHolder {
+        /*package*/ abstract class NYTViewHolder extends RecyclerView.ViewHolder {
+            /** {@inheritDoc} */
+            public NYTViewHolder(View itemView) {
+                super(itemView);
+            }
+        }
+
+        /**
+         * View holder for default item.
+         */
+        /*package*/ class NYTViewHolderDefault extends NYTViewHolder {
             /* Views. */
-            ImageView image;
+            ImageView imgImage;
             TextView tvTitle;
             View vDivider;
 
             /** {@inheritDoc} */
-            public ViewHolder(View itemView) {
+            public NYTViewHolderDefault(View itemView) {
                 super(itemView);
 
                 // Image
-                image = itemView.findViewById(R.id.nyt_item_list_article_image);
+                imgImage = itemView.findViewById(R.id.nyt_item_list_article_default_image);
 
                 // Title
-                tvTitle = itemView.findViewById(R.id.nyt_item_list_article_title);
+                tvTitle = itemView.findViewById(R.id.nyt_item_list_article_default_title);
 
                 // Divider
-                vDivider = itemView.findViewById(R.id.nyt_item_list_article_divider);
+                vDivider = itemView.findViewById(R.id.nyt_item_list_article_default_divider);
+            }
+        }
+
+        /**
+         * View holder for load more item.
+         */
+        /*package*/ class NYTViewHolderLoadMore extends NYTViewHolder {
+            /** {@inheritDoc} */
+            public NYTViewHolderLoadMore(View itemView) {
+                super(itemView);
             }
         }
     }

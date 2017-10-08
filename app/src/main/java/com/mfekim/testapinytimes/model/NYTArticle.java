@@ -18,7 +18,7 @@ public class NYTArticle {
     private NYTArticleHeadline mHeadline;
 
     @SerializedName("multimedia")
-    private List<NYTMultimedia> mMultimediaList;
+    private List<NYTArticleMultimedia> mMultimediaList;
 
     /**
      * @param defaultValue Default value if the data is null or empty.
@@ -26,5 +26,20 @@ public class NYTArticle {
      */
     public String optMainHeadline(String defaultValue) {
         return mHeadline != null ? mHeadline.optMain(defaultValue) : defaultValue;
+    }
+
+    /**
+     * @return The article thumbnail URL, null otherwise.
+     */
+    public String getThumbnailUrl() {
+        if (mMultimediaList != null) {
+            for (NYTArticleMultimedia multimedia : mMultimediaList) {
+                if (multimedia.isThumbnail()) {
+                    return multimedia.getUrl();
+                }
+            }
+        }
+
+        return null;
     }
 }
