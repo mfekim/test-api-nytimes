@@ -16,7 +16,7 @@
         android:theme="@style/NYTAppTheme">
 
         <!-- Article List -->
-        <activity android:name="com.mfekim.testapinytimes.NYTArticleListActivity"
+        <activity android:name="com.mfekim.testapinytimes.article.list.NYTArticleListActivity"
                   android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

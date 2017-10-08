@@ -1,8 +1,9 @@
-package com.mfekim.testapinytimes;
+package com.mfekim.testapinytimes.article.list;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.mfekim.testapinytimes.R;
 import com.mfekim.testapinytimes.base.NYTBaseActivity;
 
 /**

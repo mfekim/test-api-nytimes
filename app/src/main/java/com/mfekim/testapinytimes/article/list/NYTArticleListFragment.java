@@ -1,4 +1,4 @@
-package com.mfekim.testapinytimes;
+package com.mfekim.testapinytimes.article.list;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.mfekim.testapinytimes.R;
 import com.mfekim.testapinytimes.api.NYTClientAPI;
 import com.mfekim.testapinytimes.base.NYTBaseFragment;
 import com.mfekim.testapinytimes.model.NYTArticle;
@@ -71,6 +72,12 @@ public class NYTArticleListFragment extends NYTBaseFragment {
         return new NYTArticleListFragment();
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -116,7 +123,11 @@ public class NYTArticleListFragment extends NYTBaseFragment {
             }
         });
 
-        fetch(0);
+        if (mArticles.isEmpty()) {
+            fetch(0);
+        } else {
+            mRvList.setAdapter(mAdapter);
+        }
     }
 
     /**
