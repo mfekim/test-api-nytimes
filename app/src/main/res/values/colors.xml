@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+
+    <!-- General -->
+    <color name="NYTColorPrimary">#3F51B5</color>
+    <color name="NYTColorPrimaryDark">#303F9F</color>
+    <color name="NYTColorAccent">#FF4081</color>
+
+</resources>

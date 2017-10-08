@@ -1,0 +1,10 @@
+<resources>
+
+    <!-- Base application theme -->
+    <style name="NYTAppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/NYTColorPrimary</item>
+        <item name="colorPrimaryDark">@color/NYTColorPrimaryDark</item>
+        <item name="colorAccent">@color/NYTColorAccent</item>
+    </style>
+
+</resources>
