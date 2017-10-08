@@ -22,7 +22,7 @@
         android:scrollbarStyle="outsideOverlay"
         android:scrollbars="vertical"/>
 
-    <!-- Loader -->
+    <!-- No Data Msg -->
     <TextView
         android:id="@+id/nyt_fragment_list_article_no_data_msg"
         android:layout_width="wrap_content"

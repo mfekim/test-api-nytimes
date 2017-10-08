@@ -24,6 +24,12 @@
             </intent-filter>
         </activity>
 
+        <!-- Article Detail -->
+        <activity android:name=".article.detail.NYTArticleDetailActivity"
+                  android:launchMode="singleTop"
+                  android:parentActivityName=".article.list.NYTArticleListActivity">
+        </activity>
+
     </application>
 
 </manifest>

@@ -24,9 +24,9 @@
             android:background="@android:color/darker_gray"
             android:scaleType="centerCrop"/>
 
-        <!-- Title -->
+        <!-- Headline -->
         <TextView
-            android:id="@+id/nyt_item_list_article_default_title"
+            android:id="@+id/nyt_item_list_article_default_headline"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_toEndOf="@+id/nyt_item_list_article_default_image"

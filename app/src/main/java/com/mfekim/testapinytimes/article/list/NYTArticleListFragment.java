@@ -16,9 +16,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.mfekim.testapinytimes.R;
 import com.mfekim.testapinytimes.api.NYTClientAPI;
+import com.mfekim.testapinytimes.article.detail.NYTArticleDetailActivity;
 import com.mfekim.testapinytimes.base.NYTBaseFragment;
 import com.mfekim.testapinytimes.model.NYTArticle;
 import com.mfekim.testapinytimes.model.NYTArticleSearchResult;
+import com.mfekim.testapinytimes.network.NYTNetworkClient;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -136,6 +138,12 @@ public class NYTArticleListFragment extends NYTBaseFragment {
         } else {
             mRvList.setAdapter(mAdapter);
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        NYTNetworkClient.getInstance().cancelAllRequest(getContext(), REQUEST_TAG);
+        super.onDestroyView();
     }
 
     /**
@@ -295,10 +303,10 @@ public class NYTArticleListFragment extends NYTBaseFragment {
                     viewHolderDefault.imgImage.setVisibility(View.GONE);
                 }
 
-                // Title
-                String title = article.optMainHeadline(null);
-                viewHolderDefault.tvTitle.setText(title);
-                viewHolderDefault.tvTitle.setVisibility(TextUtils.isEmpty(title) ?
+                // Headline
+                String headline = article.optMainHeadline(null);
+                viewHolderDefault.tvHeadline.setText(headline);
+                viewHolderDefault.tvHeadline.setVisibility(TextUtils.isEmpty(headline) ?
                         View.GONE : View.VISIBLE);
 
                 // Divider
@@ -328,18 +336,28 @@ public class NYTArticleListFragment extends NYTBaseFragment {
         /*package*/ class NYTViewHolderDefault extends NYTViewHolder {
             /* Views. */
             ImageView imgImage;
-            TextView tvTitle;
+            TextView tvHeadline;
             View vDivider;
 
             /** {@inheritDoc} */
             public NYTViewHolderDefault(View itemView) {
                 super(itemView);
 
+                // Click
+                itemView.findViewById(R.id.nyt_item_list_article_default_main)
+                        .setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                NYTArticleDetailActivity.launchActivity(getActivity(),
+                                        mArticles.get(getAdapterPosition()).getId());
+                            }
+                        });
+
                 // Image
                 imgImage = itemView.findViewById(R.id.nyt_item_list_article_default_image);
 
-                // Title
-                tvTitle = itemView.findViewById(R.id.nyt_item_list_article_default_title);
+                // Headline
+                tvHeadline = itemView.findViewById(R.id.nyt_item_list_article_default_headline);
 
                 // Divider
                 vDivider = itemView.findViewById(R.id.nyt_item_list_article_default_divider);

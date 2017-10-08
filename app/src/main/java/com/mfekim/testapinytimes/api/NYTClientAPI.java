@@ -21,6 +21,7 @@ public class NYTClientAPI {
     public static String FIELD_ID = "_id";
     public static String FIELD_HEADLINE = "headline";
     public static String FIELD_MULTIMEDIA = "multimedia";
+    public static String FIELD_SNIPPET = "snippet";
 
     /** Tag for logs. */
     private static final String TAG = NYTClientAPI.class.getSimpleName();
@@ -64,7 +65,7 @@ public class NYTClientAPI {
                               final Response.Listener<NYTArticleSearchResult> listener,
                               final Response.ErrorListener errorListener,
                               String tag) {
-        String url = NYTLogUtils.logUrl(getArticleSearchApiUrl(page, fields));
+        String url = NYTLogUtils.logUrl(getArticlesUrl(page, fields));
         NYTGsonRequest<NYTArticleSearchResult> request =
                 new NYTGsonRequest<>(url, NYTArticleSearchResult.class, null,
                         new Response.Listener<NYTArticleSearchResult>() {
@@ -90,6 +91,44 @@ public class NYTClientAPI {
     }
 
     /**
+     * @param context       Context.
+     * @param articleId     Article id.
+     * @param fields        Needed fields to have into the API response.
+     * @param listener      Listener for success.
+     * @param errorListener Listener for error.
+     * @param tag           Request tag.
+     */
+    public void fetchArticle(Context context, String articleId, List<String> fields,
+                             final Response.Listener<NYTArticleSearchResult> listener,
+                             final Response.ErrorListener errorListener,
+                             String tag) {
+        String url = NYTLogUtils.logUrl(getArticleUrl(articleId, fields));
+        NYTGsonRequest<NYTArticleSearchResult> request =
+                new NYTGsonRequest<>(url, NYTArticleSearchResult.class, null,
+                        new Response.Listener<NYTArticleSearchResult>() {
+                            @Override
+                            public void onResponse(NYTArticleSearchResult result) {
+                                Log.d(TAG, "Fetch article SUCCESS\n" + result.toString());
+                                if (listener != null) {
+                                    listener.onResponse(result);
+                                }
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.e(TAG, "Fetch article ERROR - " + error.getLocalizedMessage());
+                                if (errorListener != null) {
+                                    errorListener.onErrorResponse(error);
+                                }
+                            }
+                        });
+        request.setTag(tag);
+        NYTNetworkClient.getInstance().addToRequestQueue(context, request);
+    }
+
+
+    /**
      * @param imagePath Image Path.
      * @return The complete image url.
      */
@@ -98,17 +137,42 @@ public class NYTClientAPI {
     }
 
     /**
-     * Gets a ready to use article search api URL.
-     *
      * @param page Page.
-     * @return The article search API url.
+     * @return The URL to retrieve articles.
      */
-    private String getArticleSearchApiUrl(int page, List<String> fields) {
-        String url = ARTICLE_SEARCH_API_URL + "?api-key=" + API_KEY +
+    private String getArticlesUrl(int page, List<String> fields) {
+        String url = getArticleSearchApiUrl() +
                 "&page=" + page +
                 "&sort=newest";
 
-        // Add fields
+        return addFieldsToURL(url, fields);
+    }
+
+    /**
+     * @param id     Article id.
+     * @param fields Needed fields to have into the API response.
+     * @return The URL to retrieve an article.
+     */
+    private String getArticleUrl(String id, List<String> fields) {
+        String url = getArticleSearchApiUrl() +
+                "&fq=_id:" + id;
+
+        return addFieldsToURL(url, fields);
+    }
+
+    /**
+     * @return A ready to use article search api URL.
+     */
+    private String getArticleSearchApiUrl() {
+        return ARTICLE_SEARCH_API_URL + "?api-key=" + API_KEY;
+    }
+
+    /**
+     * @param url    URL.
+     * @param fields Needed fields to have into the API response.
+     * @return An URL with the param "fields".
+     */
+    private String addFieldsToURL(String url, List<String> fields) {
         if (fields != null && !fields.isEmpty()) {
             url += "&fl=" + TextUtils.join(",", fields);
         }

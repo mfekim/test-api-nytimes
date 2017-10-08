@@ -14,6 +14,7 @@ public class NYTArticleMultimedia {
 
     /** Image Types. */
     private static final String TYPE_IMAGE_THUMBNAIL = "thumbnail";
+    private static final String TYPE_IMAGE_XLARGE = "xlarge";
 
     @SerializedName("type")
     private String mType;
@@ -24,11 +25,24 @@ public class NYTArticleMultimedia {
     @SerializedName("url")
     private String mUrl;
 
+    @SerializedName("width")
+    private int mWidth;
+
+    @SerializedName("height")
+    private int mHeight;
+
     /**
      * @return True if it is a thumbnail, false otherwise.
      */
     public boolean isThumbnail() {
         return isImage() && mSubtype != null && mSubtype.equals(TYPE_IMAGE_THUMBNAIL);
+    }
+
+    /**
+     * @return True if it is a xlarge image, false otherwise.
+     */
+    public boolean isXLarge() {
+        return isImage() && mSubtype != null && mSubtype.equals(TYPE_IMAGE_XLARGE);
     }
 
     /**
@@ -43,5 +57,12 @@ public class NYTArticleMultimedia {
      */
     public String getUrl() {
         return mUrl;
+    }
+
+    /**
+     * @return The ratio.
+     */
+    public float getRatio() {
+        return mWidth / mHeight;
     }
 }

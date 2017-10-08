@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- -->
+    <ScrollView
+        android:id="@+id/nyt_fragment_detail_article_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"
+        tools:visibility="visible">
+
+        <!-- -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Image -->
+            <ImageView
+                android:id="@+id/nyt_fragment_detail_article_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/darker_gray"
+                android:scaleType="centerCrop"
+                tools:layout_height="200dp"/>
+
+            <!-- -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/nyt_activity_vertical_margin"
+                android:paddingEnd="@dimen/nyt_activity_horizontal_margin"
+                android:paddingLeft="@dimen/nyt_activity_horizontal_margin"
+                android:paddingRight="@dimen/nyt_activity_horizontal_margin"
+                android:paddingStart="@dimen/nyt_activity_horizontal_margin"
+                android:paddingTop="@dimen/nyt_activity_vertical_margin">
+
+                <!-- Headline -->
+                <TextView
+                    android:id="@+id/nyt_fragment_detail_article_headline"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore "/>
+
+                <!-- Snippet -->
+                <TextView
+                    android:id="@+id/nyt_fragment_detail_article_snippet"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"
+                    tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore "/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+    <!-- Error Msg -->
+    <TextView
+        android:id="@+id/nyt_fragment_detail_article_error_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:paddingBottom="@dimen/nyt_activity_vertical_margin"
+        android:paddingEnd="@dimen/nyt_activity_horizontal_margin"
+        android:paddingLeft="@dimen/nyt_activity_horizontal_margin"
+        android:paddingRight="@dimen/nyt_activity_horizontal_margin"
+        android:paddingStart="@dimen/nyt_activity_horizontal_margin"
+        android:paddingTop="@dimen/nyt_activity_vertical_margin"
+        android:text="@string/nyt_article_list_no_data_msg"
+        android:visibility="invisible"
+        tools:visibility="visible"/>
+
+    <!-- Loader -->
+    <ProgressBar
+        android:id="@+id/nyt_fragment_detail_article_loader"
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="invisible"
+        tools:visibility="visible"/>
+
+</RelativeLayout>
