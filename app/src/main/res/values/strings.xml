@@ -1,5 +1,9 @@
 <resources>
 
+    <!-- General -->
     <string name="nyt_app_name">test-api-nytimes</string>
+
+    <!-- Article List -->
+    <string name="nyt_article_list_no_data_msg">Aucune donnée</string>
 
 </resources>

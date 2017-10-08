@@ -14,6 +14,17 @@ public class NYTArticle {
     @SerializedName("_id")
     private String mId;
 
+    @SerializedName("headline")
+    private NYTArticleHeadline mHeadline;
+
     @SerializedName("multimedia")
     private List<NYTMultimedia> mMultimediaList;
+
+    /**
+     * @param defaultValue Default value if the data is null or empty.
+     * @return The main headline, default value passed as parameter otherwise.
+     */
+    public String optMainHeadline(String defaultValue) {
+        return mHeadline != null ? mHeadline.optMain(defaultValue) : defaultValue;
+    }
 }

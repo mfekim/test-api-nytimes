@@ -7,4 +7,10 @@
     android:layout_height="match_parent"
     tools:context="com.mfekim.testapinytimes.NYTArticleListActivity">
 
+    <!-- Fragment Container -->
+    <FrameLayout
+        android:id="@+id/nyt_activity_list_article_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
 </android.support.constraint.ConstraintLayout>

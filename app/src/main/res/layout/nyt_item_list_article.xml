@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    tools:context="com.mfekim.testapinytimes.NYTArticleListActivity">
+
+    <!-- Main -->
+    <RelativeLayout
+        android:id="@+id/nyt_item_list_article_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true">
+
+        <!-- Image -->
+        <ImageView
+            android:id="@+id/nyt_item_list_article_image"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@android:color/black"/>
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/nyt_item_list_article_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/nyt_item_list_article_image"
+            android:layout_toRightOf="@+id/nyt_item_list_article_image"
+            android:textColor="@android:color/black"
+            android:textStyle="bold"
+            tools:text="This is a title"/>
+
+    </RelativeLayout>
+
+    <!-- Divider -->
+    <View
+        android:id="@+id/nyt_item_list_article_divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/nyt_activity_vertical_margin"
+        android:layout_below="@id/nyt_item_list_article_main"
+        android:background="?android:colorBackground"/>
+
+</RelativeLayout>

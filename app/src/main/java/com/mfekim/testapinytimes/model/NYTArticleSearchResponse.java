@@ -13,4 +13,11 @@ public class NYTArticleSearchResponse {
 
     @SerializedName("docs")
     private List<NYTArticle> mArticles;
+
+    /**
+     * @return List of {@link NYTArticle}, null otherwise.
+     */
+    public List<NYTArticle> getArticles() {
+        return mArticles;
+    }
 }
