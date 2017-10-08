@@ -1,6 +1,7 @@
 package com.mfekim.testapinytimes.api;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.volley.Response;
@@ -10,10 +11,17 @@ import com.mfekim.testapinytimes.model.NYTArticleSearchResult;
 import com.mfekim.testapinytimes.network.NYTNetworkClient;
 import com.mfekim.testapinytimes.utils.NYTLogUtils;
 
+import java.util.List;
+
 /**
  * Client API.
  */
 public class NYTClientAPI {
+    /** Fields. */
+    public static String FIELD_ID = "_id";
+    public static String FIELD_HEADLINE = "headline";
+    public static String FIELD_MULTIMEDIA = "multimedia";
+
     /** Tag for logs. */
     private static final String TAG = NYTClientAPI.class.getSimpleName();
 
@@ -47,15 +55,16 @@ public class NYTClientAPI {
      *
      * @param context       Context.
      * @param page          Page.
+     * @param fields        Fields to include into the response.
      * @param tag           Request tag.
      * @param listener      Listener for success.
      * @param errorListener Listener for error.
      */
-    public void fetchArticles(Context context, int page,
+    public void fetchArticles(Context context, int page, List<String> fields,
                               final Response.Listener<NYTArticleSearchResult> listener,
                               final Response.ErrorListener errorListener,
                               String tag) {
-        String url = NYTLogUtils.logUrl(getArticleSearchApiUrl(page));
+        String url = NYTLogUtils.logUrl(getArticleSearchApiUrl(page, fields));
         NYTGsonRequest<NYTArticleSearchResult> request =
                 new NYTGsonRequest<>(url, NYTArticleSearchResult.class, null,
                         new Response.Listener<NYTArticleSearchResult>() {
@@ -72,7 +81,7 @@ public class NYTClientAPI {
                             public void onErrorResponse(VolleyError error) {
                                 Log.e(TAG, "Fetch articles ERROR - " + error.getLocalizedMessage());
                                 if (errorListener != null) {
-                                    onErrorResponse(error);
+                                    errorListener.onErrorResponse(error);
                                 }
                             }
                         });
@@ -94,7 +103,16 @@ public class NYTClientAPI {
      * @param page Page.
      * @return The article search API url.
      */
-    private String getArticleSearchApiUrl(int page) {
-        return ARTICLE_SEARCH_API_URL + "?api-key=" + API_KEY + "&page=" + page;
+    private String getArticleSearchApiUrl(int page, List<String> fields) {
+        String url = ARTICLE_SEARCH_API_URL + "?api-key=" + API_KEY +
+                "&page=" + page +
+                "&sort=newest";
+
+        // Add fields
+        if (fields != null && !fields.isEmpty()) {
+            url += "&fl=" + TextUtils.join(",", fields);
+        }
+
+        return url;
     }
 }

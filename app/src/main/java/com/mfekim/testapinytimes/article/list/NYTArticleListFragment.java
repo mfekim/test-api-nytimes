@@ -65,6 +65,9 @@ public class NYTArticleListFragment extends NYTBaseFragment {
      */
     private int mVisibleThreshold = 4;
 
+    /** Needed fields to have into the API response. */
+    private List<String> mFields;
+
     /**
      * @return A new instance of {@link NYTArticleListFragment}.
      */
@@ -76,6 +79,11 @@ public class NYTArticleListFragment extends NYTBaseFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+
+        mFields = new ArrayList<>();
+        mFields.add(NYTClientAPI.FIELD_ID);
+        mFields.add(NYTClientAPI.FIELD_HEADLINE);
+        mFields.add(NYTClientAPI.FIELD_MULTIMEDIA);
     }
 
     @Nullable
@@ -137,7 +145,7 @@ public class NYTArticleListFragment extends NYTBaseFragment {
      */
     private void fetch(final int page) {
         onFetchStarting(page);
-        NYTClientAPI.getInstance().fetchArticles(getContext(), page,
+        NYTClientAPI.getInstance().fetchArticles(getContext(), page, mFields,
                 new Response.Listener<NYTArticleSearchResult>() {
                     @Override
                     public void onResponse(NYTArticleSearchResult result) {
