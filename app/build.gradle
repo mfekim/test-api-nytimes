@@ -3,6 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 26
     buildToolsVersion "26.0.1"
+
     defaultConfig {
         applicationId "com.mfekim.testapinytimes"
         minSdkVersion 16
@@ -11,12 +12,21 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+}
+
+ext {
+    supportLibraryVersion = '26.1.0'
+    gsonVersion = '2.8.2'
+    volleyVersion = '1.0.0'
+    picassoVersion = '2.5.2'
+    picasso2Okhttp3DownloaderVersion = '1.1.0'
 }
 
 dependencies {
@@ -27,18 +37,18 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
     // Support Library
-    compile 'com.android.support:appcompat-v7:26.1.0'
-    compile 'com.android.support:recyclerview-v7:26.1.0'
-    compile 'com.android.support:design:26.1.0'
+    compile "com.android.support:appcompat-v7:$supportLibraryVersion"
+    compile "com.android.support:recyclerview-v7:$supportLibraryVersion"
+    compile "com.android.support:design:$supportLibraryVersion"
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
 
     // Parsing Library
-    compile 'com.google.code.gson:gson:2.8.2'
+    compile "com.google.code.gson:gson:$gsonVersion"
 
     // Networking Library
-    compile 'com.android.volley:volley:1.0.0'
+    compile "com.android.volley:volley:$volleyVersion"
 
     // Image Library
-    compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0'
+    compile "com.squareup.picasso:picasso:$picassoVersion"
+    compile "com.jakewharton.picasso:picasso2-okhttp3-downloader:$picasso2Okhttp3DownloaderVersion"
 }

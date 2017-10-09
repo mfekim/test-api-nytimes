@@ -1,4 +1,4 @@
-package com.mfekim.testapinytimes;
+package com.mfekim.testapinytimes.article;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -7,9 +7,9 @@ import android.content.Intent;
 import android.content.pm.LabeledIntent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.content.res.Resources;
 import android.util.Log;
 
+import com.mfekim.testapinytimes.R;
 import com.mfekim.testapinytimes.model.NYTArticle;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import java.util.List;
  * <p>
  * You can share data with different texts on a few apps.
  */
-public class NYTShareAction {
+public class NYTShareArticle {
     /**
      * The managed share apps.
      * APP_NAME => APP_PACKAGE_NAME
@@ -35,7 +35,7 @@ public class NYTShareAction {
     private static final String WHATS_APP = "com.whatsapp";
 
     /** Tag for logs. */
-    private static final String TAG = NYTShareAction.class.getSimpleName();
+    private static final String TAG = NYTShareArticle.class.getSimpleName();
 
     /** The share apps. */
     private List<String> mShareApps;
@@ -43,18 +43,18 @@ public class NYTShareAction {
     /** Holder. */
     private static class SingletonHolder {
         /** Unique instance. */
-        private final static NYTShareAction INSTANCE = new NYTShareAction();
+        private final static NYTShareArticle INSTANCE = new NYTShareArticle();
     }
 
     /** Unique entry point to get the instance. */
-    public static NYTShareAction getInstance() {
+    public static NYTShareArticle getInstance() {
         return SingletonHolder.INSTANCE;
     }
 
     /**
      * Default constructor.
      */
-    private NYTShareAction() {
+    private NYTShareArticle() {
         mShareApps = new ArrayList<>();
         mShareApps.add(EMAIL);
         mShareApps.add(GMAIL);
@@ -75,7 +75,6 @@ public class NYTShareAction {
     public void shareArticle(Activity activity, NYTArticle article) {
         if (article != null && activity != null && !activity.isFinishing()) {
             PackageManager packageManager = activity.getPackageManager();
-            Resources resources = activity.getResources();
 
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/plain");

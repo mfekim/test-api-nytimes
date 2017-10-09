@@ -14,11 +14,14 @@ import okhttp3.Protocol;
  * Application class.
  */
 public class NYTApplication extends Application {
+    /** Tag for logs. */
+    private static final String TAG = NYTApplication.class.getSimpleName();
+
     @Override
     public void onCreate() {
         super.onCreate();
 
-        // Init Picasso
+        // Init Picasso (needed to work with HTTPS)
         OkHttpClient client = new OkHttpClient.Builder()
                 .protocols(Collections.singletonList(Protocol.HTTP_1_1))
                 .build();

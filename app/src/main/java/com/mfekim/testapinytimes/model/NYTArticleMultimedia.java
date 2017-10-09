@@ -9,10 +9,10 @@ public class NYTArticleMultimedia {
     /** Tag for logs. */
     private static final String TAG = NYTArticleMultimedia.class.getSimpleName();
 
-    /** Multimedia Types. */
+    /** Multimedia types. */
     private static final String TYPE_IMAGE = "image";
 
-    /** Image Types. */
+    /** Image types. */
     private static final String TYPE_IMAGE_THUMBNAIL = "thumbnail";
     private static final String TYPE_IMAGE_XLARGE = "xlarge";
 

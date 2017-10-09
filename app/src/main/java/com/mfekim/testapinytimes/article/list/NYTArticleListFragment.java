@@ -146,6 +146,8 @@ public class NYTArticleListFragment extends NYTBaseFragment {
         super.onDestroyView();
     }
 
+    //region Fetching
+
     /**
      * Fetches articles.
      *
@@ -245,6 +247,7 @@ public class NYTArticleListFragment extends NYTBaseFragment {
 
         fetch(mCurrentPage + 1);
     }
+    //endregion
 
     /**
      * Manages article list.

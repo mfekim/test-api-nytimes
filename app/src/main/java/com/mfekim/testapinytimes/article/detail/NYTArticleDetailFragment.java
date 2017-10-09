@@ -12,13 +12,14 @@ import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.mfekim.testapinytimes.NYTShareAction;
 import com.mfekim.testapinytimes.R;
 import com.mfekim.testapinytimes.api.NYTClientAPI;
+import com.mfekim.testapinytimes.article.NYTShareArticle;
 import com.mfekim.testapinytimes.base.NYTBaseFragment;
 import com.mfekim.testapinytimes.model.NYTArticle;
 import com.mfekim.testapinytimes.model.NYTArticleMultimedia;
 import com.mfekim.testapinytimes.model.NYTArticleSearchResult;
+import com.mfekim.testapinytimes.network.NYTNetworkClient;
 import com.mfekim.testapinytimes.utils.NYTDeviceUtils;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -116,7 +117,7 @@ public class NYTArticleDetailFragment extends NYTBaseFragment {
             @Override
             public void onClick(View view) {
                 if (mArticle != null) {
-                    NYTShareAction.getInstance().shareArticle(getActivity(), mArticle);
+                    NYTShareArticle.getInstance().shareArticle(getActivity(), mArticle);
                 } else {
                     // TODO
                 }
@@ -128,6 +129,13 @@ public class NYTArticleDetailFragment extends NYTBaseFragment {
         } else {
             fetch();
         }
+    }
+
+
+    @Override
+    public void onDestroyView() {
+        NYTNetworkClient.getInstance().cancelAllRequest(getContext(), REQUEST_TAG);
+        super.onDestroyView();
     }
 
     //region Fetching

@@ -5,9 +5,12 @@ import android.graphics.Point;
 import android.util.DisplayMetrics;
 
 /**
- * Gives device's information.
+ * Gives device information.
  */
 public class NYTDeviceUtils {
+    /** Tag for logs. */
+    private static final String TAG = NYTDeviceUtils.class.getSimpleName();
+
     /**
      * @param context A context.
      * @return The screen dimension IN PIXELS.
@@ -23,13 +26,5 @@ public class NYTDeviceUtils {
      */
     public static int getScreenWidth(Context context) {
         return getScreenDimension(context).x;
-    }
-
-    /**
-     * @param context A context.
-     * @return The screen height IN PIXELS.
-     */
-    public static int getScreenHeight(Context context) {
-        return getScreenDimension(context).y;
     }
 }
