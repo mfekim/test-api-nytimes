@@ -22,6 +22,7 @@ public class NYTClientAPI {
     public static String FIELD_HEADLINE = "headline";
     public static String FIELD_MULTIMEDIA = "multimedia";
     public static String FIELD_SNIPPET = "snippet";
+    public static String FIELD_WEB_URL = "web_url";
 
     /** Tag for logs. */
     private static final String TAG = NYTClientAPI.class.getSimpleName();

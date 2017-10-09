@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.mfekim.testapinytimes.NYTShareAction;
 import com.mfekim.testapinytimes.R;
 import com.mfekim.testapinytimes.api.NYTClientAPI;
 import com.mfekim.testapinytimes.base.NYTBaseFragment;
@@ -45,6 +46,7 @@ public class NYTArticleDetailFragment extends NYTBaseFragment {
     private ImageView mImgImage;
     private TextView mTvHeadline;
     private TextView mTvSnippet;
+    private View mVShare;
 
     /** Article Id. */
     private String mArticleId;
@@ -79,6 +81,7 @@ public class NYTArticleDetailFragment extends NYTBaseFragment {
         mFields.add(NYTClientAPI.FIELD_HEADLINE);
         mFields.add(NYTClientAPI.FIELD_MULTIMEDIA);
         mFields.add(NYTClientAPI.FIELD_SNIPPET);
+        mFields.add(NYTClientAPI.FIELD_WEB_URL);
 
         Bundle args = getArguments();
         if (args.containsKey(ARG_ARTICLE_ID)) {
@@ -106,6 +109,19 @@ public class NYTArticleDetailFragment extends NYTBaseFragment {
         mTvSnippet = view.findViewById(R.id.nyt_fragment_detail_article_snippet);
         mVLoader = view.findViewById(R.id.nyt_fragment_detail_article_loader);
         mTvErrorMsg = view.findViewById(R.id.nyt_fragment_detail_article_error_msg);
+        mVShare = view.findViewById(R.id.nyt_fragment_detail_article_share_button);
+
+        // Share
+        mVShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mArticle != null) {
+                    NYTShareAction.getInstance().shareArticle(getActivity(), mArticle);
+                } else {
+                    // TODO
+                }
+            }
+        });
 
         if (mArticle != null) {
             bindData(mArticle);
@@ -222,8 +238,10 @@ public class NYTArticleDetailFragment extends NYTBaseFragment {
             mTvSnippet.setText(article.optSnippet(""));
 
             mVgMain.setVisibility(View.VISIBLE);
+            mVShare.setVisibility(View.VISIBLE);
         } else {
             mVgMain.setVisibility(View.INVISIBLE);
+            mVShare.setVisibility(View.INVISIBLE);
             mTvErrorMsg.setVisibility(View.VISIBLE);
         }
     }

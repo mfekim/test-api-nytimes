@@ -25,6 +25,9 @@ public class NYTArticle {
     @SerializedName("snippet")
     private String mSnippet;
 
+    @SerializedName("web_url")
+    private String mWebUrl;
+
     /**
      * @param defaultValue Default value if the data is null or empty.
      * @return The main headline, default value passed as parameter otherwise.
@@ -46,6 +49,13 @@ public class NYTArticle {
      */
     public String getId() {
         return mId;
+    }
+
+    /**
+     * @return The web url.
+     */
+    public String getWebUrl() {
+        return mWebUrl;
     }
 
     /**

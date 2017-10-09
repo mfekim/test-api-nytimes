@@ -2,6 +2,7 @@
 
     <!-- General -->
     <string name="nyt_app_name">test-api-nytimes</string>
+    <string name="nyt_share_action_dialog_title">Partager</string>
 
     <!-- Article List -->
     <string name="nyt_article_list_no_data_msg">Aucune donnée</string>
